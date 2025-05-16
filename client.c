@@ -1,6 +1,7 @@
 #include "util.h"
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -16,14 +17,20 @@ int main() {
   if (result == 0)
     printf("connection was successfull \n");
 
-  char *message;
-  message = "GET \\ HTTP/1.1\r\nHost:google.com\r\n\r\n";
-  send(socketFD, message, strlen(message), 0);
+  char *line = NULL;
+  size_t lineSize = 0;
+  printf("Type what to send(type exit to exit)...\n");
 
-  char buffer[1024];
-  recv(socketFD, buffer, 1024, 0);
+  while (true) {
+    ssize_t charCount = getline(&line, &lineSize, stdin);
 
-  printf("Response was %s\n", buffer);
+    if (charCount > 0) {
+      if (strcmp(line, "exit\n") == 0)
+        break;
+
+      ssize_t amountWasSent = send(socketFD, line, charCount, 0);
+    }
+  }
 
   return 0;
 }
