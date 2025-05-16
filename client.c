@@ -1,3 +1,4 @@
+#include "util.h"
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -5,15 +6,12 @@
 #include <sys/socket.h>
 
 int main() {
-  int socketFD = socket(AF_INET, SOCK_STREAM, 0);
+  int socketFD = createTCPIpv4Socket();
 
   char *ip = "172.253.63.100";
-  struct sockaddr_in address;
-  address.sin_family = AF_INET;
-  address.sin_port = htons(80);
-  inet_pton(AF_INET, ip, &address.sin_addr.s_addr);
+  struct sockaddr_in *address = createTCPIpv4Address(ip, 80);
 
-  int result = connect(socketFD, &address, sizeof address);
+  int result = connect(socketFD, address, sizeof(*address));
 
   if (result == 0)
     printf("connection was successfull \n");
