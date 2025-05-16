@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <unistd.h>
 
 int main() {
   int socketFD = createTCPIpv4Socket();
@@ -31,6 +32,8 @@ int main() {
       ssize_t amountWasSent = send(socketFD, line, charCount, 0);
     }
   }
+
+  close(socketFD);
 
   return 0;
 }
