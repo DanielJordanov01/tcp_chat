@@ -5,6 +5,33 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+struct AcceptedSocket {
+  int acceptedSocketFD;
+  struct sockaddr_in address;
+  int error;
+  bool acceptedSuccessfull;
+};
+
+struct AcceptedSocket *acceptIncomingConnection(int serverSocketFD);
+
+struct AcceptedSocket *acceptIncomingConnection(int serverSocketFD) {
+  struct sockaddr_in clientAddress;
+  int clientAddressSize = sizeof(struct sockaddr_in);
+  int clientSocketFD =
+      accept(serverSocketFD, &clientAddress, &clientAddressSize);
+  printf("Client with socketFD %d connected successfully\n", clientSocketFD);
+
+  struct AcceptedSocket *acceptedSocket = malloc(sizeof(struct AcceptedSocket));
+  acceptedSocket->address = clientAddress;
+  acceptedSocket->acceptedSocketFD = clientSocketFD;
+  acceptedSocket->acceptedSuccessfull = clientSocketFD > 0;
+
+  if (!acceptedSocket->acceptedSuccessfull)
+    acceptedSocket->error = clientSocketFD;
+
+  return acceptedSocket;
+}
+
 int main() {
   int serverSocketFD = createTCPIpv4Socket();
 
@@ -22,15 +49,13 @@ int main() {
     printf("Listening... \n");
   }
 
-  struct sockaddr_in clientAddress;
-  int clientAddressSize = sizeof(struct sockaddr_in);
-  int clientSocketFD =
-      accept(serverSocketFD, &clientAddress, &clientAddressSize);
-  printf("Client with socketFD %d connected successfully\n", clientSocketFD);
+  struct AcceptedSocket *clientSocket =
+      acceptIncomingConnection(serverSocketFD);
 
   char buffer[1024];
   while (true) {
-    ssize_t amountReceived = recv(clientSocketFD, buffer, 1024, 0);
+    ssize_t amountReceived =
+        recv(clientSocket->acceptedSocketFD, buffer, 1024, 0);
 
     if (amountReceived > 0) {
       buffer[amountReceived] = 0;
@@ -42,9 +67,10 @@ int main() {
     }
   }
 
-  close(clientSocketFD);
+  close(clientSocket->acceptedSocketFD);
   shutdown(serverSocketFD, SHUT_RDWR);
-  printf("Client with socketFD %d disconnected \n", clientSocketFD);
+  printf("Client with socketFD %d disconnected \n",
+         clientSocket->acceptedSocketFD);
 
   return 0;
 }
