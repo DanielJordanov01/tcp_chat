@@ -8,8 +8,8 @@
 int main() {
   int socketFD = createTCPIpv4Socket();
 
-  char *ip = "172.253.63.100";
-  struct sockaddr_in *address = createTCPIpv4Address(ip, 80);
+  char *ip = "127.0.0.1";
+  struct sockaddr_in *address = createTCPIpv4Address(ip, 2000);
 
   int result = connect(socketFD, address, sizeof(*address));
 
