@@ -7,6 +7,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+void readAndSendLine(int socketFD);
+
 int main() {
   int socketFD = createTCPIpv4Socket();
 
@@ -18,6 +20,14 @@ int main() {
   if (result == 0)
     printf("connection was successfull \n");
 
+  readAndSendLine(socketFD);
+
+  close(socketFD);
+
+  return 0;
+}
+
+void readAndSendLine(int socketFD) {
   char *line = NULL;
   size_t lineSize = 0;
   printf("Type what to send(type exit to exit)...\n");
@@ -32,8 +42,4 @@ int main() {
       ssize_t amountWasSent = send(socketFD, line, charCount, 0);
     }
   }
-
-  close(socketFD);
-
-  return 0;
 }

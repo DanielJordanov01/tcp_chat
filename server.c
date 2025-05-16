@@ -14,23 +14,7 @@ struct AcceptedSocket {
 
 struct AcceptedSocket *acceptIncomingConnection(int serverSocketFD);
 
-struct AcceptedSocket *acceptIncomingConnection(int serverSocketFD) {
-  struct sockaddr_in clientAddress;
-  int clientAddressSize = sizeof(struct sockaddr_in);
-  int clientSocketFD =
-      accept(serverSocketFD, &clientAddress, &clientAddressSize);
-  printf("Client with socketFD %d connected successfully\n", clientSocketFD);
-
-  struct AcceptedSocket *acceptedSocket = malloc(sizeof(struct AcceptedSocket));
-  acceptedSocket->address = clientAddress;
-  acceptedSocket->acceptedSocketFD = clientSocketFD;
-  acceptedSocket->acceptedSuccessfull = clientSocketFD > 0;
-
-  if (!acceptedSocket->acceptedSuccessfull)
-    acceptedSocket->error = clientSocketFD;
-
-  return acceptedSocket;
-}
+void receiveAndPrintIncomingData(int socketFD);
 
 int main() {
   int serverSocketFD = createTCPIpv4Socket();
@@ -52,10 +36,20 @@ int main() {
   struct AcceptedSocket *clientSocket =
       acceptIncomingConnection(serverSocketFD);
 
+  receiveAndPrintIncomingData(clientSocket->acceptedSocketFD);
+
+  close(clientSocket->acceptedSocketFD);
+  shutdown(serverSocketFD, SHUT_RDWR);
+  printf("Client with socketFD %d disconnected \n",
+         clientSocket->acceptedSocketFD);
+
+  return 0;
+}
+
+void receiveAndPrintIncomingData(int socketFD) {
   char buffer[1024];
   while (true) {
-    ssize_t amountReceived =
-        recv(clientSocket->acceptedSocketFD, buffer, 1024, 0);
+    ssize_t amountReceived = recv(socketFD, buffer, 1024, 0);
 
     if (amountReceived > 0) {
       buffer[amountReceived] = 0;
@@ -66,11 +60,22 @@ int main() {
       break;
     }
   }
+}
 
-  close(clientSocket->acceptedSocketFD);
-  shutdown(serverSocketFD, SHUT_RDWR);
-  printf("Client with socketFD %d disconnected \n",
-         clientSocket->acceptedSocketFD);
+struct AcceptedSocket *acceptIncomingConnection(int serverSocketFD) {
+  struct sockaddr_in clientAddress;
+  int clientAddressSize = sizeof(struct sockaddr_in);
+  int clientSocketFD =
+      accept(serverSocketFD, &clientAddress, &clientAddressSize);
+  printf("Client with socketFD %d connected successfully\n", clientSocketFD);
 
-  return 0;
+  struct AcceptedSocket *acceptedSocket = malloc(sizeof(struct AcceptedSocket));
+  acceptedSocket->address = clientAddress;
+  acceptedSocket->acceptedSocketFD = clientSocketFD;
+  acceptedSocket->acceptedSuccessfull = clientSocketFD > 0;
+
+  if (!acceptedSocket->acceptedSuccessfull)
+    acceptedSocket->error = clientSocketFD;
+
+  return acceptedSocket;
 }
