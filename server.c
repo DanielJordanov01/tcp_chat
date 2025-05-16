@@ -1,7 +1,9 @@
 #include "util.h"
 #include <netinet/in.h>
+#include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -13,8 +15,11 @@ struct AcceptedSocket {
 };
 
 struct AcceptedSocket *acceptIncomingConnection(int serverSocketFD);
-
-void receiveAndPrintIncomingData(int socketFD);
+void receiveAndPrintIncomingDataOnSeparateThread(
+    struct AcceptedSocket *pSocket);
+void *receiveAndPrintIncomingData(void *socketFD);
+void startAcceptingIncomingConnections(int socketFD);
+void acceptNewConnectionAndReceiveAndPrintItsData(int serverSocketFD);
 
 int main() {
   int serverSocketFD = createTCPIpv4Socket();
@@ -33,20 +38,36 @@ int main() {
     printf("Listening... \n");
   }
 
-  struct AcceptedSocket *clientSocket =
-      acceptIncomingConnection(serverSocketFD);
+  startAcceptingIncomingConnections(serverSocketFD);
 
-  receiveAndPrintIncomingData(clientSocket->acceptedSocketFD);
-
-  close(clientSocket->acceptedSocketFD);
   shutdown(serverSocketFD, SHUT_RDWR);
-  printf("Client with socketFD %d disconnected \n",
-         clientSocket->acceptedSocketFD);
+  printf("Client disconnected \n");
 
   return 0;
 }
 
-void receiveAndPrintIncomingData(int socketFD) {
+void startAcceptingIncomingConnections(int serverSocketFD) {
+  while (true) {
+    struct AcceptedSocket *clientSocket =
+        acceptIncomingConnection(serverSocketFD);
+
+    receiveAndPrintIncomingDataOnSeparateThread(clientSocket);
+  }
+}
+
+void receiveAndPrintIncomingDataOnSeparateThread(
+    struct AcceptedSocket *pSocket) {
+  pthread_t id;
+  int *fd = malloc(sizeof(int));
+  *fd = pSocket->acceptedSocketFD;
+
+  pthread_create(&id, NULL, receiveAndPrintIncomingData, fd);
+}
+
+void *receiveAndPrintIncomingData(void *arg) {
+  int socketFD = *(int *)arg;
+  free(arg);
+
   char buffer[1024];
   while (true) {
     ssize_t amountReceived = recv(socketFD, buffer, 1024, 0);
@@ -60,6 +81,10 @@ void receiveAndPrintIncomingData(int socketFD) {
       break;
     }
   }
+
+  close(socketFD);
+
+  return NULL;
 }
 
 struct AcceptedSocket *acceptIncomingConnection(int serverSocketFD) {
