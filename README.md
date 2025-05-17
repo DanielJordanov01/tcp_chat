@@ -2,29 +2,34 @@
 
 This project implements a basic multi-threaded TCP chat system in C using sockets and POSIX threads (`pthread`). It includes both a **server** and a **client** that communicate over IPv4. The server can handle multiple clients and broadcasts messages to all connected clients.
 
-## 🛠️ Features
+## 🛠 Features
 
 - Multi-client chat server using threads
 - Threaded client that listens and sends messages simultaneously
 - Uses raw sockets and manual memory management
-- Clean separation of utilities (in `util.c`)
 
-## 📁 Project Structure
+## 📁 Folder Structure
 
 ```
-.
-├── client.c          # TCP client that connects to the server
-├── server.c          # TCP server that accepts multiple clients
-├── util.c            # Helper functions for sockets and addresses
-├── util.h            # Header file for util.c
-├── Makefile          # Builds the project
-├── .gitignore        # Git ignore rules
-├── build/            # Output folder for binaries and object files
+tcp-chat/
+├── include/            # Header files (.h)
+│   └── util.h
+│
+├── src/                # Source files (.c)
+│   ├── client.c
+│   ├── server.c
+│   └── util.c
+│
+├── build/              # Compiled output (binary + .o files) [auto-created]
+│
+├── Makefile            # Build script
+├── .gitignore          # Git ignore rules
+└── README.md           # Project overview
 ```
 
 ---
 
-## 🚀 Build Instructions
+## ⚙️ Build Instructions
 
 ### 🧱 Requirements
 
@@ -51,7 +56,7 @@ make clean
 
 ---
 
-## 🦚 Run Instructions
+## 🧪 Run Instructions
 
 ### 1. Start the Server
 
@@ -75,7 +80,7 @@ All messages are broadcasted to every other connected client.
 
 ---
 
-## 📌 Example
+## 📝 Example
 
 **Client A:**
 
@@ -94,10 +99,14 @@ Alice: Hello!
 
 ---
 
-## 📄 Notes
+## 📌 Notes
 
 - IP address in `client.c` is currently hardcoded to `127.0.0.1`.
 - Port is `2000` by default — you can change it in the source code.
 - Memory is manually allocated/freed — be careful to avoid leaks or race conditions.
 
 ---
+
+## 🔗 Resources
+
+- https://www.youtube.com/watch?v=KEiur5aZnIM

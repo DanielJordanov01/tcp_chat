@@ -1,35 +1,46 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -pthread
+CFLAGS = -Wall -Wextra -Iinclude
+SRC_DIR = src
 BUILD_DIR = build
 
-# Source files
-UTIL_SRC = util.c
-SERVER_SRC = server.c
-CLIENT_SRC = client.c
+CLIENT_SRC = $(SRC_DIR)/client.c
+SERVER_SRC = $(SRC_DIR)/server.c
+UTIL_SRC = $(SRC_DIR)/util.c
 
-# Object and binary targets
-UTIL_OBJ = $(BUILD_DIR)/util.o
-SERVER_OBJ = $(BUILD_DIR)/server.o
 CLIENT_OBJ = $(BUILD_DIR)/client.o
+SERVER_OBJ = $(BUILD_DIR)/server.o
+UTIL_OBJ = $(BUILD_DIR)/util.o
 
-SERVER_BIN = $(BUILD_DIR)/server
 CLIENT_BIN = $(BUILD_DIR)/client
-
-all: $(BUILD_DIR) $(SERVER_BIN) $(CLIENT_BIN)
-
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
-
-$(SERVER_BIN): $(SERVER_OBJ) $(UTIL_OBJ)
-	$(CC) $(CFLAGS) -o $@ $^
-
-$(CLIENT_BIN): $(CLIENT_OBJ) $(UTIL_OBJ)
-	$(CC) $(CFLAGS) -o $@ $^
-
-$(BUILD_DIR)/%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-clean:
-	rm -rf $(BUILD_DIR)
+SERVER_BIN = $(BUILD_DIR)/server
 
 .PHONY: all clean
+
+all: $(CLIENT_BIN) $(SERVER_BIN)
+
+$(BUILD_DIR):
+	@mkdir -p $(BUILD_DIR)
+
+# Build client binary
+$(CLIENT_BIN): $(CLIENT_OBJ) $(UTIL_OBJ) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) $^ -o $@ -lpthread
+
+# Build server binary
+$(SERVER_BIN): $(SERVER_OBJ) $(UTIL_OBJ) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) $^ -o $@ -lpthread
+
+# Compile client object
+$(CLIENT_OBJ): $(CLIENT_SRC) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Compile server object
+$(SERVER_OBJ): $(SERVER_SRC) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Compile util object
+$(UTIL_OBJ): $(UTIL_SRC) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean build directory
+clean:
+	rm -rf $(BUILD_DIR)
