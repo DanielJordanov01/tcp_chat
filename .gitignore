@@ -1,2 +1,14 @@
-*.o
-*.exe
+# Build artifacts
+/build/
+
+# Editor/IDE files
+*.swp
+*~
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Backup files
+*.bak

@@ -100,6 +100,7 @@ void *receiveAndPrintIncomingData(void *arg) {
   }
 
   close(socketFD);
+  printf("Client with socketFD %d disconnected\n", socketFD);
 
   return NULL;
 }

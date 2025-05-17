@@ -17,7 +17,9 @@ This project implements a basic multi-threaded TCP chat system in C using socket
 ├── server.c          # TCP server that accepts multiple clients
 ├── util.c            # Helper functions for sockets and addresses
 ├── util.h            # Header file for util.c
-├── Makefile          # To compile the project easily (optional but recommended)
+├── Makefile          # Builds the project
+├── .gitignore        # Git ignore rules
+├── build/            # Output folder for binaries and object files
 ```
 
 ---
@@ -30,19 +32,21 @@ This project implements a basic multi-threaded TCP chat system in C using socket
 - POSIX-compliant OS (Linux, macOS)
 - `make` (optional, but easier)
 
-### 🔧 Build (Manually)
+### 🔧 Build with Make
 
 ```bash
-gcc -o server server.c util.c -lpthread
-gcc -o client client.c util.c -lpthread
+make
 ```
 
-Or use a simple `Makefile`:
+This will compile all source files and place the output in the `build/` directory:
 
-```make
-all:
-	gcc -o server server.c util.c -lpthread
-	gcc -o client client.c util.c -lpthread
+- `build/server`
+- `build/client`
+
+To clean up build artifacts:
+
+```bash
+make clean
 ```
 
 ---
@@ -52,7 +56,7 @@ all:
 ### 1. Start the Server
 
 ```bash
-./server
+./build/server
 ```
 
 The server listens on `127.0.0.1:2000` and accepts incoming connections.
@@ -60,7 +64,7 @@ The server listens on `127.0.0.1:2000` and accepts incoming connections.
 ### 2. Start One or More Clients (in separate terminals)
 
 ```bash
-./client
+./build/client
 ```
 
 - The client will ask for your name.
@@ -95,20 +99,5 @@ Alice: Hello!
 - IP address in `client.c` is currently hardcoded to `127.0.0.1`.
 - Port is `2000` by default — you can change it in the source code.
 - Memory is manually allocated/freed — be careful to avoid leaks or race conditions.
-
----
-
-## ✅ TODOs / Improvements
-
-- Add support for usernames on the server side
-- Graceful handling of disconnected clients
-- Improve error reporting and edge-case handling
-- Optional: add logging or timestamps
-
----
-
-## 🔗 Resources
-
-- https://www.youtube.com/watch?v=KEiur5aZnIM
 
 ---
