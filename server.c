@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -20,6 +21,10 @@ void receiveAndPrintIncomingDataOnSeparateThread(
 void *receiveAndPrintIncomingData(void *socketFD);
 void startAcceptingIncomingConnections(int socketFD);
 void acceptNewConnectionAndReceiveAndPrintItsData(int serverSocketFD);
+void sendReceivedMessageToOtherClients(char *buffer, int socketFD);
+
+struct AcceptedSocket acceptedSockets[10];
+int acceptedSocketsCount = 0;
 
 int main() {
   int serverSocketFD = createTCPIpv4Socket();
@@ -51,6 +56,8 @@ void startAcceptingIncomingConnections(int serverSocketFD) {
     struct AcceptedSocket *clientSocket =
         acceptIncomingConnection(serverSocketFD);
 
+    acceptedSockets[acceptedSocketsCount++] = *clientSocket;
+
     receiveAndPrintIncomingDataOnSeparateThread(clientSocket);
   }
 }
@@ -64,6 +71,14 @@ void receiveAndPrintIncomingDataOnSeparateThread(
   pthread_create(&id, NULL, receiveAndPrintIncomingData, fd);
 }
 
+void sendReceivedMessageToOtherClients(char *buffer, int socketFD) {
+  for (int i = 0; i < acceptedSocketsCount; i++) {
+    if (acceptedSockets[i].acceptedSocketFD != socketFD) {
+      send(acceptedSockets[i].acceptedSocketFD, buffer, strlen(buffer), 0);
+    }
+  }
+}
+
 void *receiveAndPrintIncomingData(void *arg) {
   int socketFD = *(int *)arg;
   free(arg);
@@ -75,6 +90,8 @@ void *receiveAndPrintIncomingData(void *arg) {
     if (amountReceived > 0) {
       buffer[amountReceived] = 0;
       printf("Response was %s\n", buffer);
+
+      sendReceivedMessageToOtherClients(buffer, socketFD);
     }
 
     if (amountReceived == 0) {

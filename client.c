@@ -1,13 +1,17 @@
 #include "util.h"
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <pthread.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
 void readAndSendLine(int socketFD);
+void *listenAndPrint(void *socketFD);
+void startListeningAndPrintMessagesOnNewThread(int socketFD);
 
 int main() {
   int socketFD = createTCPIpv4Socket();
@@ -20,11 +24,43 @@ int main() {
   if (result == 0)
     printf("connection was successfull \n");
 
+  startListeningAndPrintMessagesOnNewThread(socketFD);
   readAndSendLine(socketFD);
 
   close(socketFD);
 
   return 0;
+}
+
+void *listenAndPrint(void *arg) {
+  int socketFD = *(int *)arg;
+  free(arg);
+
+  char buffer[1024];
+  while (true) {
+    ssize_t amountReceived = recv(socketFD, buffer, 1024, 0);
+
+    if (amountReceived > 0) {
+      buffer[amountReceived] = 0;
+      printf("Response was %s\n", buffer);
+    }
+
+    if (amountReceived == 0) {
+      break;
+    }
+  }
+
+  close(socketFD);
+
+  return NULL;
+}
+
+void startListeningAndPrintMessagesOnNewThread(int socketFD) {
+  int *fd = malloc(sizeof(int));
+  *fd = socketFD;
+
+  pthread_t id;
+  pthread_create(&id, NULL, listenAndPrint, fd);
 }
 
 void readAndSendLine(int socketFD) {
