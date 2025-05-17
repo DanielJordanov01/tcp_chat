@@ -42,7 +42,7 @@ void *listenAndPrint(void *arg) {
 
     if (amountReceived > 0) {
       buffer[amountReceived] = 0;
-      printf("Response was %s\n", buffer);
+      printf("%s\n", buffer);
     }
 
     if (amountReceived == 0) {
@@ -64,18 +64,29 @@ void startListeningAndPrintMessagesOnNewThread(int socketFD) {
 }
 
 void readAndSendLine(int socketFD) {
+  char *name = NULL;
+  size_t nameSize = 0;
+  printf("Please enter your name\n");
+  ssize_t nameCount = getline(&name, &nameSize, stdin);
+  name[nameCount - 1] = 0; // Remove the \n
+
   char *line = NULL;
   size_t lineSize = 0;
   printf("Type what to send(type exit to exit)...\n");
 
+  char buffer[1024];
+
   while (true) {
     ssize_t charCount = getline(&line, &lineSize, stdin);
+    line[charCount - 1] = 0; // Remove the \n
+
+    sprintf(buffer, "%s: %s", name, line);
 
     if (charCount > 0) {
-      if (strcmp(line, "exit\n") == 0)
+      if (strcmp(line, "exit") == 0)
         break;
 
-      ssize_t amountWasSent = send(socketFD, line, charCount, 0);
+      ssize_t amountWasSent = send(socketFD, buffer, strlen(buffer), 0);
     }
   }
 }
