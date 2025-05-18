@@ -1,57 +1,56 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude
+LDFLAGS = -lpthread
+
+# Directories
 SRC_DIR = src
 BUILD_DIR = build
 TEST_DIR = test
+INCLUDE_DIR = include
 
-CLIENT_SRC = $(SRC_DIR)/client.c
-SERVER_SRC = $(SRC_DIR)/server.c
-UTIL_SRC = $(SRC_DIR)/util.c
-TESTS := $(TEST_DIR)/test_util
-UNITY_SRC := $(TEST_DIR)/unity/unity.c
+SRC_FILES := $(filter-out $(SRC_DIR)/client.c $(SRC_DIR)/server.c, $(wildcard $(SRC_DIR)/*.c))
+OBJ_FILES := $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRC_FILES))
 
-CLIENT_OBJ = $(BUILD_DIR)/client.o
-SERVER_OBJ = $(BUILD_DIR)/server.o
-UTIL_OBJ = $(BUILD_DIR)/util.o
-
+# Special targets
 CLIENT_BIN = $(BUILD_DIR)/client
 SERVER_BIN = $(BUILD_DIR)/server
+CLIENT_OBJ = $(BUILD_DIR)/client.o
+SERVER_OBJ = $(BUILD_DIR)/server.o
 
-.PHONY: all clean
+UNITY_SRC := $(TEST_DIR)/unity/unity.c
 
+TEST_SRC := $(wildcard $(TEST_DIR)/test_*.c)
+TEST_BINS := $(patsubst $(TEST_DIR)/%.c, $(BUILD_DIR)/%, $(TEST_SRC))
+
+# Phony targets
+.PHONY: all clean test
+
+# Default target
 all: $(CLIENT_BIN) $(SERVER_BIN)
 
-.PHONY: test
-test: build/tests
+# Test target
+test: $(TEST_BINS)
+	@for test in $(TEST_BINS); do \
+		echo "Running $$test"; \
+		./$$test; \
+	done
 
+# Create build directory
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
 
-# Build client binary
-$(CLIENT_BIN): $(CLIENT_OBJ) $(UTIL_OBJ) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) $^ -o $@ -lpthread
-
-# Build server binary
-$(SERVER_BIN): $(SERVER_OBJ) $(UTIL_OBJ) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) $^ -o $@ -lpthread
-
-# Compile client object
-$(CLIENT_OBJ): $(CLIENT_SRC) | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Compile server object
-$(SERVER_OBJ): $(SERVER_SRC) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+$(CLIENT_BIN): $(CLIENT_OBJ) $(OBJ_FILES) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
-# Compile util object
-$(UTIL_OBJ): $(UTIL_SRC) | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+$(SERVER_BIN): $(SERVER_OBJ) $(OBJ_FILES) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
-# Clean build directory
+$(BUILD_DIR)/test_%: $(TEST_DIR)/test_%.c $(UNITY_SRC) $(SRC_FILES) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+
 clean:
 	rm -rf $(BUILD_DIR)
 
-# Run tests
-build/tests: $(TESTS).c $(SRC_DIR)/util.c $(UNITY_SRC)
-	$(CC) -o build/test_util $^
-	./build/test_util
