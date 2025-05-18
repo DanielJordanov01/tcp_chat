@@ -1,4 +1,4 @@
-#include "../include/util.h"
+#include "../include/connection.h"
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <pthread.h>

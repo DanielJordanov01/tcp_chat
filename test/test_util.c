@@ -1,4 +1,4 @@
-#include "../include/util.h"
+#include "../include/connection.h"
 #include "unity/unity.h"
 #include <arpa/inet.h>
 #include <stdlib.h>
