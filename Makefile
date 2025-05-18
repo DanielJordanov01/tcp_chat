@@ -2,10 +2,13 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude
 SRC_DIR = src
 BUILD_DIR = build
+TEST_DIR = test
 
 CLIENT_SRC = $(SRC_DIR)/client.c
 SERVER_SRC = $(SRC_DIR)/server.c
 UTIL_SRC = $(SRC_DIR)/util.c
+TESTS := $(TEST_DIR)/test_util
+UNITY_SRC := $(TEST_DIR)/unity/unity.c
 
 CLIENT_OBJ = $(BUILD_DIR)/client.o
 SERVER_OBJ = $(BUILD_DIR)/server.o
@@ -17,6 +20,9 @@ SERVER_BIN = $(BUILD_DIR)/server
 .PHONY: all clean
 
 all: $(CLIENT_BIN) $(SERVER_BIN)
+
+.PHONY: test
+test: build/tests
 
 $(BUILD_DIR):
 	@mkdir -p $(BUILD_DIR)
@@ -44,3 +50,8 @@ $(UTIL_OBJ): $(UTIL_SRC) | $(BUILD_DIR)
 # Clean build directory
 clean:
 	rm -rf $(BUILD_DIR)
+
+# Run tests
+build/tests: $(TESTS).c $(SRC_DIR)/util.c $(UNITY_SRC)
+	$(CC) -o build/test_util $^
+	./build/test_util
