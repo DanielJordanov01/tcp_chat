@@ -42,30 +42,24 @@ void *listenAndPrint(void *arg) {
 }
 
 void readAndSendLine(int socketFD) {
-  struct UserInput *name = readUserInput("Please enter your name");
+  struct UserInput name = readUserInput("Please enter your name");
   char buffer[1024];
 
   while (true) {
-    struct UserInput *message =
+    struct UserInput message =
         readUserInput("Type what to send(type exit to exit)...");
 
-    sprintf(buffer, "%s: %s", name->value, message->value);
+    sprintf(buffer, "%s: %s", name.value, message.value);
 
-    if (message->count > 0) {
-      if (strcmp(message->value, "exit") == 0)
+    if (message.count > 0) {
+      if (strcmp(message.value, "exit") == 0)
         break;
 
       ssize_t amountWasSent = send(socketFD, buffer, strlen(buffer), 0);
     }
 
-    if (message != NULL) {
-      free(message);
-      message = NULL;
-    }
+    free(message.value);
   }
 
-  if (name != NULL) {
-    free(name);
-    name = NULL;
-  }
+  free(name.value);
 }

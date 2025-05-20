@@ -8,6 +8,6 @@ struct UserInput {
   size_t size;
   ssize_t count;
 };
-struct UserInput *readUserInput(char prompt[200]);
+struct UserInput readUserInput(char prompt[200]);
 
 #endif
