@@ -2,6 +2,11 @@
 
 This project implements a basic multi-threaded TCP chat system in C using sockets and POSIX threads (`pthread`). It includes both a **server** and a **client** that communicate over IPv4. The server can handle multiple clients and broadcasts messages to all connected clients.
 
+## ❗Disclaimer
+
+The aim for this project is for me to explore socket programming and memory management in C. It's highly likely
+I've done both poorly.
+
 ## 🛠 Features
 
 - Multi-client chat server using threads
