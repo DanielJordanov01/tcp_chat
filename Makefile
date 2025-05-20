@@ -23,7 +23,7 @@ TEST_SRC := $(wildcard $(TEST_DIR)/test_*.c)
 TEST_BINS := $(patsubst $(TEST_DIR)/%.c, $(BUILD_DIR)/%, $(TEST_SRC))
 
 # Phony targets
-.PHONY: all clean test
+.PHONY: all clean test docs
 
 # Default target
 all: $(CLIENT_BIN) $(SERVER_BIN)
@@ -34,6 +34,9 @@ test: $(TEST_BINS)
 		echo "Running $$test"; \
 		./$$test; \
 	done
+
+docs: 
+	doxygen Doxyfile
 
 # Create build directory
 $(BUILD_DIR):

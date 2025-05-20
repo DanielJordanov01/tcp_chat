@@ -13,16 +13,15 @@ This project implements a basic multi-threaded TCP chat system in C using socket
 ```
 tcp-chat/
 ├── include/            # Header files (.h)
-│   └── util.h
 │
 ├── src/                # Source files (.c)
-│   ├── client.c
-│   ├── server.c
-│   └── util.c
 │
 ├── build/              # Compiled output (binary + .o files) [auto-created]
 │
+├── docs/               # Documentation on functions [auto-created]
+│
 ├── Makefile            # Build script
+├── Doxyfile            # Documentation configuration
 ├── .gitignore          # Git ignore rules
 └── README.md           # Project overview
 ```

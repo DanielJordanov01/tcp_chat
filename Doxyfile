@@ -1,0 +1,8 @@
+PROJECT_NAME           = "TCP Chat"
+OUTPUT_DIRECTORY       = docs
+GENERATE_HTML          = YES
+RECURSIVE              = YES
+INPUT                  = include 
+FILE_PATTERNS          = *.h
+EXTRACT_ALL            = YES
+
