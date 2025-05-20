@@ -20,20 +20,20 @@ struct sockaddr_in *createTCPIpv4Address(char *ip, int port) {
 
 int createTCPIpv4Socket() { return socket(AF_INET, SOCK_STREAM, 0); }
 
-struct AcceptedSocket *acceptIncomingConnection(int serverSocketFD) {
+struct AcceptedSocket acceptIncomingConnection(int serverSocketFD) {
   struct sockaddr_in clientAddress;
-  int clientAddressSize = sizeof(struct sockaddr_in);
-  int clientSocketFD =
-      accept(serverSocketFD, &clientAddress, &clientAddressSize);
+  socklen_t clientAddressSize = sizeof(struct sockaddr_in);
+  int clientSocketFD = accept(serverSocketFD, (struct sockaddr *)&clientAddress,
+                              &clientAddressSize);
   printf("Client with socketFD %d connected successfully\n", clientSocketFD);
 
-  struct AcceptedSocket *acceptedSocket = malloc(sizeof(struct AcceptedSocket));
-  acceptedSocket->address = clientAddress;
-  acceptedSocket->acceptedSocketFD = clientSocketFD;
-  acceptedSocket->acceptedSuccessfull = clientSocketFD > 0;
+  struct AcceptedSocket acceptedSocket;
+  acceptedSocket.address = clientAddress;
+  acceptedSocket.acceptedSocketFD = clientSocketFD;
+  acceptedSocket.acceptedSuccessfull = clientSocketFD > 0;
 
-  if (!acceptedSocket->acceptedSuccessfull)
-    acceptedSocket->error = clientSocketFD;
+  if (!acceptedSocket.acceptedSuccessfull)
+    acceptedSocket.error = clientSocketFD;
 
   return acceptedSocket;
 }

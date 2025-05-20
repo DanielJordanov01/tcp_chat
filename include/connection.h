@@ -1,5 +1,5 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef CONNECTION_H
+#define CONNECTION_H
 
 #include <netinet/in.h>
 #include <stdbool.h>
@@ -13,6 +13,6 @@ struct AcceptedSocket {
 
 struct sockaddr_in *createTCPIpv4Address(char *ip, int port);
 int createTCPIpv4Socket();
-struct AcceptedSocket *acceptIncomingConnection(int serverSocketFD);
+struct AcceptedSocket acceptIncomingConnection(int serverSocketFD);
 
 #endif

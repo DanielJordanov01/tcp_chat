@@ -44,13 +44,12 @@ int main() {
 
 void startAcceptingIncomingConnections(int serverSocketFD) {
   while (true) {
-    struct AcceptedSocket *clientSocket =
+    struct AcceptedSocket clientSocket =
         acceptIncomingConnection(serverSocketFD);
 
-    acceptedSockets[acceptedSocketsCount++] = *clientSocket;
+    acceptedSockets[acceptedSocketsCount++] = clientSocket;
 
-    workOnNewThread(clientSocket->acceptedSocketFD,
-                    receiveAndPrintIncomingData);
+    workOnNewThread(clientSocket.acceptedSocketFD, receiveAndPrintIncomingData);
   }
 }
 
