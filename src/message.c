@@ -1,4 +1,6 @@
 #include "../include/connection.h"
+#include "../include/input.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,29 +42,30 @@ void *listenAndPrint(void *arg) {
 }
 
 void readAndSendLine(int socketFD) {
-  char *name = NULL;
-  size_t nameSize = 0;
-  printf("Please enter your name\n");
-  ssize_t nameCount = getline(&name, &nameSize, stdin);
-  name[nameCount - 1] = 0; // Remove the \n
-
-  char *line = NULL;
-  size_t lineSize = 0;
-  printf("Type what to send(type exit to exit)...\n");
-
+  struct UserInput *name = readUserInput("Please enter your name");
   char buffer[1024];
 
   while (true) {
-    ssize_t charCount = getline(&line, &lineSize, stdin);
-    line[charCount - 1] = 0; // Remove the \n
+    struct UserInput *message =
+        readUserInput("Type what to send(type exit to exit)...");
 
-    sprintf(buffer, "%s: %s", name, line);
+    sprintf(buffer, "%s: %s", name->value, message->value);
 
-    if (charCount > 0) {
-      if (strcmp(line, "exit") == 0)
+    if (message->count > 0) {
+      if (strcmp(message->value, "exit") == 0)
         break;
 
       ssize_t amountWasSent = send(socketFD, buffer, strlen(buffer), 0);
     }
+
+    if (message != NULL) {
+      free(message);
+      message = NULL;
+    }
+  }
+
+  if (name != NULL) {
+    free(name);
+    name = NULL;
   }
 }
