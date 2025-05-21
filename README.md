@@ -65,7 +65,7 @@ make clean
 ### 1. Start the Server
 
 ```bash
-./build/server
+./build/server 127.0.0.1 2000
 ```
 
 The server listens on `127.0.0.1:2000` and accepts incoming connections.
@@ -73,7 +73,7 @@ The server listens on `127.0.0.1:2000` and accepts incoming connections.
 ### 2. Start One or More Clients (in separate terminals)
 
 ```bash
-./build/client
+./build/client 127.0.0.1 2000
 ```
 
 - The client will ask for your name.
@@ -105,8 +105,6 @@ Alice: Hello!
 
 ## 📌 Notes
 
-- IP address in `client.c` is currently hardcoded to `127.0.0.1`.
-- Port is `2000` by default — you can change it in the source code.
 - Memory is manually allocated/freed — be careful to avoid leaks or race conditions.
 
 ---
