@@ -1,6 +1,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+#include <stdio.h>
 #include <unistd.h>
 
 /**
@@ -41,6 +42,6 @@ struct UserInput {
  *         - `count`: number of characters read (including the removed newline).
  *         If input fails (`getline` returns -1), all fields are zero or NULL.
  */
-struct UserInput readUserInput(char prompt[200]);
+struct UserInput readUserInput(char prompt[200], FILE *input);
 
 #endif

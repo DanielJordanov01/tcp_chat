@@ -4,13 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct UserInput readUserInput(char prompt[200]) {
+struct UserInput readUserInput(char prompt[200], FILE *input) {
   char *value = NULL;
   size_t size = 0;
   struct UserInput usrInput;
 
   printf("%s\n", prompt);
-  ssize_t count = getline(&value, &size, stdin);
+  ssize_t count = getline(&value, &size, input);
 
   if (count == -1) {
     usrInput.value = NULL;
