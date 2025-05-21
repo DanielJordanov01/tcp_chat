@@ -16,6 +16,8 @@
 void *receiveAndPrintIncomingData(void *socketFD);
 void startAcceptingIncomingConnections(int socketFD);
 void acceptNewConnectionAndReceiveAndPrintItsData(int serverSocketFD);
+void removeDisconnectedClient(int socketFD);
+void disconnectClient(int socketFD);
 
 AcceptedSocket acceptedSockets[10];
 int acceptedSocketsCount = 0;
@@ -81,13 +83,31 @@ void *receiveAndPrintIncomingData(void *arg) {
     if (amountReceived == 0) {
       break;
     }
+
+    if (amountReceived < 0) {
+      perror("There was an error with received message");
+    }
   }
 
-  int closeResult = close(socketFD);
-  if (closeResult == 0)
-    printf("Client with socketFD %d disconnected\n", socketFD);
-  else
-    fprintf(stderr, "Failed to disconnect client with socketFD %d", socketFD);
+  disconnectClient(socketFD);
 
   return NULL;
+}
+
+void disconnectClient(int socketFD) {
+  int closeResult = close(socketFD);
+  if (closeResult == 0) {
+    removeDisconnectedClient(socketFD);
+    printf("Client with socketFD %d disconnected\n", socketFD);
+  } else
+    fprintf(stderr, "Failed to disconnect client with socketFD %d", socketFD);
+}
+
+void removeDisconnectedClient(int socketFD) {
+  for (int i = 0; i < acceptedSocketsCount; i++) {
+    if (acceptedSockets[i].acceptedSocketFD == socketFD) {
+      acceptedSockets[i] = acceptedSockets[i + 1];
+      acceptedSocketsCount--;
+    }
+  }
 }
