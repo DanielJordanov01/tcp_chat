@@ -1,8 +1,10 @@
 #include "../include/config.h"
 #include "../include/connection.h"
+#include "../include/macros.h"
 #include "../include/message.h"
 #include "../include/threading.h"
 
+#include <errno.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <stdbool.h>
@@ -21,19 +23,16 @@ int acceptedSocketsCount = 0;
 int main(int argc, char *argv[]) {
   int serverSocketFD = createTCPIpv4Socket();
   Config config = parseArgs(argc, argv);
+  CHECK_UNRECOVERABLE_ERROR(!config.valid,
+                            "Invalid or missing arguments: %s <ip> <port>");
 
-  if (!config.valid) {
-    fprintf(stderr, "Invalid or missing arguments: %s <ip> <port>\n", argv[0]);
-    return 1;
-  }
-
-  char *ip = "";
-  struct sockaddr_in serverAddress = createTCPIpv4Address(ip, config.port);
+  struct sockaddr_in serverAddress =
+      createTCPIpv4Address(config.ip, config.port);
 
   int result = bind(serverSocketFD, (struct sockaddr *)&serverAddress,
                     sizeof(serverAddress));
-  if (result == 0)
-    printf("Server socket bound successfully \n");
+  CHECK_UNRECOVERABLE_ERROR(result != 0, "Failed to bind server socket");
+  printf("Server socket bound successfully \n");
 
   int backlogAmount = 10;
   int listenResult = listen(serverSocketFD, backlogAmount);
@@ -43,8 +42,12 @@ int main(int argc, char *argv[]) {
 
   startAcceptingIncomingConnections(serverSocketFD);
 
-  shutdown(serverSocketFD, SHUT_RDWR);
-  printf("Client disconnected \n");
+  int shutResult = shutdown(serverSocketFD, SHUT_RDWR);
+  if (shutResult != 0) {
+    perror("Error shutting down server socket");
+  } else {
+    printf("Server stopped \n");
+  }
 
   return 0;
 }
@@ -80,8 +83,11 @@ void *receiveAndPrintIncomingData(void *arg) {
     }
   }
 
-  close(socketFD);
-  printf("Client with socketFD %d disconnected\n", socketFD);
+  int closeResult = close(socketFD);
+  if (closeResult == 0)
+    printf("Client with socketFD %d disconnected\n", socketFD);
+  else
+    fprintf(stderr, "Failed to disconnect client with socketFD %d", socketFD);
 
   return NULL;
 }

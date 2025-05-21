@@ -36,8 +36,6 @@ void *listenAndPrint(void *arg) {
     }
   }
 
-  close(socketFD);
-
   return NULL;
 }
 

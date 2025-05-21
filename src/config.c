@@ -13,7 +13,7 @@ Config parseArgs(int argc, char *argv[]) {
     }
 
     config.valid = 1;
-    config.port = atoi(argv[2]);
+    config.port = port;
   }
 
   return config;

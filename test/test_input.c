@@ -11,7 +11,7 @@ void test_readUserInput_reads_input_correctly(void) {
   fprintf(input, "hello world\n");
   rewind(input);
 
-  struct UserInput result = readUserInput("Enter message", input);
+  UserInput result = readUserInput("Enter message", input);
 
   TEST_ASSERT_NOT_NULL(result.value);
   TEST_ASSERT_EQUAL_STRING("hello world", result.value);
@@ -26,7 +26,7 @@ void test_readUserInput_handles_empty_input(void) {
   fprintf(input, "\n");
   rewind(input);
 
-  struct UserInput result = readUserInput("Prompt", input);
+  UserInput result = readUserInput("Prompt", input);
 
   TEST_ASSERT_NOT_NULL(result.value);
   TEST_ASSERT_EQUAL_STRING("", result.value);
@@ -39,7 +39,7 @@ void test_readUserInput_handles_eof(void) {
   FILE *input = tmpfile();
   rewind(input);
 
-  struct UserInput result = readUserInput("Prompt", input);
+  UserInput result = readUserInput("Prompt", input);
 
   TEST_ASSERT_NULL(result.value);
   TEST_ASSERT_EQUAL(0, result.size);

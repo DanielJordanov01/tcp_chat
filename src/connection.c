@@ -1,4 +1,6 @@
 #include "../include/connection.h"
+#include "../include/macros.h"
+
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <string.h>
@@ -11,8 +13,11 @@ struct sockaddr_in createTCPIpv4Address(char *ip, int port) {
 
   if (strlen(ip) == 0)
     address.sin_addr.s_addr = INADDR_ANY;
-  else
-    inet_pton(AF_INET, ip, &address.sin_addr.s_addr);
+  else {
+    int result = inet_pton(AF_INET, ip, &address.sin_addr.s_addr);
+    CHECK_UNRECOVERABLE_ERROR(result != 1,
+                              "Unsuccessful network address conversion");
+  }
 
   return address;
 }

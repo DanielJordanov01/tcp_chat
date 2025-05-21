@@ -1,5 +1,6 @@
 #include "../include/config.h"
 #include "../include/connection.h"
+#include "../include/macros.h"
 #include "../include/message.h"
 #include "../include/threading.h"
 
@@ -23,14 +24,15 @@ int main(int argc, char *argv[]) {
   struct sockaddr_in address = createTCPIpv4Address(config.ip, config.port);
 
   int result = connect(socketFD, (struct sockaddr *)&address, sizeof(address));
+  CHECK_UNRECOVERABLE_ERROR(result != 0, "Failed to connect to server");
 
-  if (result == 0)
-    printf("connection was successfull \n");
+  printf("connection was successfull \n");
 
   workOnNewThread(socketFD, listenAndPrint);
   readAndSendLine(socketFD);
 
-  close(socketFD);
+  int closeResult = close(socketFD);
+  CHECK_UNRECOVERABLE_ERROR(closeResult != 0, "Failed to close socket");
 
   return 0;
 }

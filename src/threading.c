@@ -1,3 +1,5 @@
+#include "../include/macros.h"
+
 #include <pthread.h>
 #include <stdlib.h>
 
@@ -10,5 +12,6 @@ void workOnNewThread(int socketFD, void *(*fn)(void *)) {
   *fd = socketFD;
 
   pthread_t id;
-  pthread_create(&id, NULL, fn, fd);
+  int error = pthread_create(&id, NULL, fn, fd);
+  CHECK_UNRECOVERABLE_ERROR(error != 0, "Failed to start a new thread");
 }
