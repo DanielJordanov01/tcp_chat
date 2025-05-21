@@ -1,6 +1,8 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#include "connection.h"
+
 /**
  * @brief Sends a received message to all other connected clients.
  *
@@ -10,7 +12,7 @@
  * @param acceptedSocketsCount Number of currently accepted clients.
  */
 void sendReceivedMessageToOtherClients(char *buffer, int socketFD,
-                                       struct AcceptedSocket acceptedSockets[],
+                                       AcceptedSocket acceptedSockets[],
                                        int acceptedSocketsCount);
 /**
  * @brief Thread function that listens for incoming messages and prints them.

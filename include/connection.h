@@ -7,13 +7,13 @@
 /**
  * @brief Holds information about an accepted client connection.
  */
-struct AcceptedSocket {
+typedef struct {
   int acceptedSocketFD;       /**< Address information of the client. */
   struct sockaddr_in address; /**< File descriptor of the accepted socket. */
   int error;                  /**< Error code if connection failed. */
   bool acceptedSuccessfull;   /**< Whether the connection was accepted
                                  successfully. */
-};
+} AcceptedSocket;
 
 /**
  * @brief Creates a configured IPv4 address struct.
@@ -38,6 +38,6 @@ int createTCPIpv4Socket();
  * @param serverSocketFD File descriptor of the listening socket.
  * @return An AcceptedSocket struct containing the client connection details.
  */
-struct AcceptedSocket acceptIncomingConnection(int serverSocketFD);
+AcceptedSocket acceptIncomingConnection(int serverSocketFD);
 
 #endif

@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct UserInput readUserInput(char prompt[200], FILE *input) {
+UserInput readUserInput(char prompt[200], FILE *input) {
   char *value = NULL;
   size_t size = 0;
-  struct UserInput usrInput;
+  UserInput usrInput;
 
   printf("%s\n", prompt);
   ssize_t count = getline(&value, &size, input);

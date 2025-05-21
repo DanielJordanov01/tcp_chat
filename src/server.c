@@ -15,7 +15,7 @@ void *receiveAndPrintIncomingData(void *socketFD);
 void startAcceptingIncomingConnections(int socketFD);
 void acceptNewConnectionAndReceiveAndPrintItsData(int serverSocketFD);
 
-struct AcceptedSocket acceptedSockets[10];
+AcceptedSocket acceptedSockets[10];
 int acceptedSocketsCount = 0;
 
 int main(int argc, char *argv[]) {
@@ -51,8 +51,7 @@ int main(int argc, char *argv[]) {
 
 void startAcceptingIncomingConnections(int serverSocketFD) {
   while (true) {
-    struct AcceptedSocket clientSocket =
-        acceptIncomingConnection(serverSocketFD);
+    AcceptedSocket clientSocket = acceptIncomingConnection(serverSocketFD);
 
     acceptedSockets[acceptedSocketsCount++] = clientSocket;
 

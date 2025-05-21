@@ -8,9 +8,9 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-void sendReceivedMessageToOtherClients(
-    char *buffer, int socketFD, struct AcceptedSocket acceptedSockets[10],
-    int acceptedSocketsCount) {
+void sendReceivedMessageToOtherClients(char *buffer, int socketFD,
+                                       AcceptedSocket acceptedSockets[10],
+                                       int acceptedSocketsCount) {
   for (int i = 0; i < acceptedSocketsCount; i++) {
     if (acceptedSockets[i].acceptedSocketFD != socketFD) {
       send(acceptedSockets[i].acceptedSocketFD, buffer, strlen(buffer), 0);
@@ -42,11 +42,11 @@ void *listenAndPrint(void *arg) {
 }
 
 void readAndSendLine(int socketFD) {
-  struct UserInput name = readUserInput("Please enter your name", stdin);
+  UserInput name = readUserInput("Please enter your name", stdin);
   char buffer[1024];
 
   while (true) {
-    struct UserInput message =
+    UserInput message =
         readUserInput("Type what to send(type exit to exit)...", stdin);
 
     sprintf(buffer, "%s: %s", name.value, message.value);

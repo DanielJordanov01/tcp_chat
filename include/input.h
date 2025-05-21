@@ -13,13 +13,13 @@
  * The `value` field is a dynamically allocated string. The caller is
  * responsible for freeing this memory when done.
  */
-struct UserInput {
+typedef struct {
   char *value;   /**< Pointer to the user input string. Must be freed by the
                     caller. */
   size_t size;   /**< Size of the allocated buffer (as allocated by getline). */
   ssize_t count; /**< Number of characters read from input, including newline
                     before trimming. */
-};
+} UserInput;
 
 /**
  * @brief Reads a line of user input from standard input after displaying a
@@ -42,6 +42,6 @@ struct UserInput {
  *         - `count`: number of characters read (including the removed newline).
  *         If input fails (`getline` returns -1), all fields are zero or NULL.
  */
-struct UserInput readUserInput(char prompt[200], FILE *input);
+UserInput readUserInput(char prompt[200], FILE *input);
 
 #endif
