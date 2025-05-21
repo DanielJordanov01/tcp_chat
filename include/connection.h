@@ -21,9 +21,8 @@ struct AcceptedSocket {
  * @param ip The IP address as a string. Use an empty string ("") for
  * INADDR_ANY.
  * @param port The port number to bind or connect to.
- * @return A pointer to a dynamically allocated sockaddr_in struct. Caller must
- * free.
- */
+ * @return sockaddr_in struct containing connection info
+ * */
 struct sockaddr_in createTCPIpv4Address(char *ip, int port);
 
 /**
