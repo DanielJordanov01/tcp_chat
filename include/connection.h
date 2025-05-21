@@ -24,7 +24,7 @@ struct AcceptedSocket {
  * @return A pointer to a dynamically allocated sockaddr_in struct. Caller must
  * free.
  */
-struct sockaddr_in *createTCPIpv4Address(char *ip, int port);
+struct sockaddr_in createTCPIpv4Address(char *ip, int port);
 
 /**
  * @brief Creates an IPv4 TCP socket.

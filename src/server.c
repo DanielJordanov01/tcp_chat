@@ -22,9 +22,10 @@ int main() {
 
   char *ip = "";
   int port = 2000;
-  struct sockaddr_in *serverAddress = createTCPIpv4Address(ip, port);
+  struct sockaddr_in serverAddress = createTCPIpv4Address(ip, port);
 
-  int result = bind(serverSocketFD, serverAddress, sizeof(*serverAddress));
+  int result = bind(serverSocketFD, (struct sockaddr *)&serverAddress,
+                    sizeof(serverAddress));
   if (result == 0)
     printf("Server socket bound successfully \n");
 
