@@ -1,3 +1,4 @@
+#include "../include/config.h"
 #include "../include/connection.h"
 #include "../include/message.h"
 #include "../include/threading.h"
@@ -10,11 +11,16 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-int main() {
+int main(int argc, char *argv[]) {
   int socketFD = createTCPIpv4Socket();
+  Config config = parseArgs(argc, argv);
 
-  char *ip = "127.0.0.1";
-  struct sockaddr_in address = createTCPIpv4Address(ip, 2000);
+  if (!config.valid) {
+    fprintf(stderr, "Invalid or missing arguments: %s <ip> <port>\n", argv[0]);
+    return 1;
+  }
+
+  struct sockaddr_in address = createTCPIpv4Address(config.ip, config.port);
 
   int result = connect(socketFD, (struct sockaddr *)&address, sizeof(address));
 

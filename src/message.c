@@ -56,6 +56,9 @@ void readAndSendLine(int socketFD) {
         break;
 
       ssize_t amountWasSent = send(socketFD, buffer, strlen(buffer), 0);
+      if (amountWasSent == 0) {
+        printf("Error: nothing sent\n");
+      }
     }
 
     free(message.value);

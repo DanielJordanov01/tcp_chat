@@ -11,7 +11,10 @@ void tearDown(void) {}
 pid_t runProcess(char *executableName) {
   pid_t pid = fork();
   char path[100];
-  sprintf(path, "./build/%s", executableName);
+  char *ip = "127.0.0.1";
+  int port = 8080;
+
+  sprintf(path, "./build/%s", executableName, ip, port);
 
   if (pid == 0) {
     execl(path, executableName, NULL);

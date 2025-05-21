@@ -1,3 +1,4 @@
+#include "../include/config.h"
 #include "../include/connection.h"
 #include "../include/message.h"
 #include "../include/threading.h"
@@ -17,12 +18,17 @@ void acceptNewConnectionAndReceiveAndPrintItsData(int serverSocketFD);
 struct AcceptedSocket acceptedSockets[10];
 int acceptedSocketsCount = 0;
 
-int main() {
+int main(int argc, char *argv[]) {
   int serverSocketFD = createTCPIpv4Socket();
+  Config config = parseArgs(argc, argv);
+
+  if (!config.valid) {
+    fprintf(stderr, "Invalid or missing arguments: %s <ip> <port>\n", argv[0]);
+    return 1;
+  }
 
   char *ip = "";
-  int port = 2000;
-  struct sockaddr_in serverAddress = createTCPIpv4Address(ip, port);
+  struct sockaddr_in serverAddress = createTCPIpv4Address(ip, config.port);
 
   int result = bind(serverSocketFD, (struct sockaddr *)&serverAddress,
                     sizeof(serverAddress));
