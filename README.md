@@ -4,7 +4,7 @@ This project implements a basic multi-threaded TCP chat system in C using socket
 
 ## ⚠️ Disclaimer
 
-The aim for this project is for me to explore socket programming and memory management in C. It's highly likely
+The aim of this project is for me to explore socket programming and memory management in C. It's highly likely
 I've done both poorly.
 
 ## 🛠 Features
