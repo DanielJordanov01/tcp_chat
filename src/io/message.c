@@ -48,7 +48,7 @@ void readAndSendLine(int socketFD) {
     UserInput message =
         readUserInput("Type what to send(type exit to exit)...", stdin);
 
-    sprintf(buffer, "%s: %s", name.value, message.value);
+    snprintf(buffer, 1024, "%s: %s", name.value, message.value);
 
     if (message.count > 0) {
       if (strcmp(message.value, "exit") == 0)
