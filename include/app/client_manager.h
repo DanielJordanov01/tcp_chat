@@ -1,7 +1,7 @@
 #ifndef CLIENT_MANAGER_H
 #define CLIENT_MANAGER_H
 
-#include "connection.h"
+#include "net/connection.h"
 
 #define MAX_CLIENTS 10
 

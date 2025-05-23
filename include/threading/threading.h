@@ -1,7 +1,7 @@
 #ifndef THREADING_H
 #define THREADING_H
 
-#include "client_manager.h"
+#include "app/client_manager.h"
 
 typedef struct {
   int socketFD;

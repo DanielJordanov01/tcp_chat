@@ -1,8 +1,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include "client_manager.h"
-#include "connection.h"
+#include "app/client_manager.h"
 
 /**
  * @brief Sends a received message to all other connected clients.
