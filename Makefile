@@ -1,5 +1,5 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude -Iinclude/net -Iinclude/app -Iinclude/core
+CC = clang
+CFLAGS = -fsanitize=address -Wall -Wextra -Iinclude -Iinclude/net -Iinclude/app -Iinclude/core
 LDFLAGS = -lpthread
 
 # Directories
