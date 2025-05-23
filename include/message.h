@@ -1,6 +1,7 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#include "client_manager.h"
 #include "connection.h"
 
 /**
@@ -12,7 +13,7 @@
  * @param acceptedSocketsCount Number of currently accepted clients.
  */
 void sendReceivedMessageToOtherClients(char *buffer, int socketFD,
-                                       AcceptedSocket acceptedSockets[],
+                                       Client clients[MAX_CLIENTS],
                                        int acceptedSocketsCount);
 /**
  * @brief Thread function that listens for incoming messages and prints them.

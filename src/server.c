@@ -1,3 +1,4 @@
+#include "../include/client_manager.h"
 #include "../include/config.h"
 #include "../include/connection.h"
 #include "../include/macros.h"
@@ -20,7 +21,10 @@ int main(int argc, char *argv[]) {
                             "Invalid or missing arguments: %s <ip> <port>");
   int socketFD = initServer(config.ip, config.port);
 
-  runServerLoop(socketFD);
+  ClientManager manager;
+  initClientManager(&manager);
+
+  runServerLoop(&manager, socketFD);
   shutdownServer(socketFD);
 
   return 0;

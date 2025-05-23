@@ -1,3 +1,4 @@
+#include "../include/client_manager.h"
 #include "../include/connection.h"
 #include "../include/input.h"
 
@@ -9,11 +10,11 @@
 #include <unistd.h>
 
 void sendReceivedMessageToOtherClients(char *buffer, int socketFD,
-                                       AcceptedSocket acceptedSockets[10],
+                                       Client clients[MAX_CLIENTS],
                                        int acceptedSocketsCount) {
   for (int i = 0; i < acceptedSocketsCount; i++) {
-    if (acceptedSockets[i].acceptedSocketFD != socketFD) {
-      send(acceptedSockets[i].acceptedSocketFD, buffer, strlen(buffer), 0);
+    if (clients[i].socket.acceptedSocketFD != socketFD) {
+      send(clients[i].socket.acceptedSocketFD, buffer, strlen(buffer), 0);
     }
   }
 }

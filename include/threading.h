@@ -1,6 +1,13 @@
 #ifndef THREADING_H
 #define THREADING_H
 
+#include "client_manager.h"
+
+typedef struct {
+  int socketFD;
+  ClientManager *manager;
+} ThreadArgs;
+
 /**
  * @brief Launches a new thread to handle a socket using a provided function.
  *
@@ -13,6 +20,6 @@
  * @note The caller must ensure that the thread function properly frees the
  *       allocated memory for the file descriptor when done.
  */
-void workOnNewThread(int socketFD, void *(*fn)(void *));
+void workOnNewThread(int socketFD, ClientManager *manager, void *(*fn)(void *));
 
 #endif

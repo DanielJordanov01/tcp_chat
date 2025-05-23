@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
 
   int socketFD = initClient(config.ip, config.port);
 
-  workOnNewThread(socketFD, listenAndPrint);
+  workOnNewThread(socketFD, NULL, listenAndPrint);
   readAndSendLine(socketFD);
 
   disconnect(socketFD);

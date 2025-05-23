@@ -1,6 +1,7 @@
 #ifndef SERVER_HANDLER_H
 #define SERVER_HANDLER_H
 
-void runServerLoop(int serverSocketFD);
+#include "client_manager.h"
+void runServerLoop(ClientManager *manager, int serverSocketFD);
 
 #endif

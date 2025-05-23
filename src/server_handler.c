@@ -1,4 +1,5 @@
 #include "../include/server_handler.h"
+#include "../include/client_manager.h"
 #include "../include/connection.h"
 #include "../include/message.h"
 #include "../include/threading.h"
@@ -8,27 +9,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-// Max number of clients
-#define MAX_CLIENTS 10
-
-static AcceptedSocket acceptedSockets[MAX_CLIENTS];
-static int acceptedSocketsCount = 0;
-
-static void removeDisconnectedClient(int socketFD) {
-  for (int i = 0; i < acceptedSocketsCount; i++) {
-    if (acceptedSockets[i].acceptedSocketFD == socketFD) {
-      for (int j = i; j < acceptedSocketsCount - 1; j++) {
-        acceptedSockets[j] = acceptedSockets[j + 1];
-      }
-      acceptedSocketsCount--;
-      break;
-    }
-  }
-}
-
-static void disconnectClient(int socketFD) {
+static void disconnectClient(ClientManager *manager, int socketFD) {
   if (close(socketFD) == 0) {
-    removeDisconnectedClient(socketFD);
+    removeClientByFD(manager, socketFD);
     printf("Client with socketFD %d disconnected\n", socketFD);
   } else {
     perror("Failed to close client socket");
@@ -36,17 +19,17 @@ static void disconnectClient(int socketFD) {
 }
 
 static void *receiveAndPrintIncomingData(void *arg) {
-  int socketFD = *(int *)arg;
-  free(arg);
+  ThreadArgs *args = (ThreadArgs *)arg;
 
   char buffer[1024];
   while (1) {
-    ssize_t received = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
+    ssize_t received = recv(args->socketFD, buffer, sizeof(buffer) - 1, 0);
 
     if (received > 0) {
       buffer[received] = '\0';
-      sendReceivedMessageToOtherClients(buffer, socketFD, acceptedSockets,
-                                        acceptedSocketsCount);
+      sendReceivedMessageToOtherClients(buffer, args->socketFD,
+                                        args->manager->clients,
+                                        getClientCount(args->manager));
     } else if (received == 0) {
       break;
     } else {
@@ -55,13 +38,15 @@ static void *receiveAndPrintIncomingData(void *arg) {
     }
   }
 
-  disconnectClient(socketFD);
+  disconnectClient(args->manager, args->socketFD);
+  free(arg);
+
   return NULL;
 }
 
-void runServerLoop(int serverSocketFD) {
+void runServerLoop(ClientManager *manager, int serverSocketFD) {
   while (true) {
-    if (acceptedSocketsCount >= MAX_CLIENTS) {
+    if (manager->count >= MAX_CLIENTS) {
       printf("Max clients reached. New connections will be rejected.\n");
       sleep(1);
       continue;
@@ -73,8 +58,9 @@ void runServerLoop(int serverSocketFD) {
       continue;
     }
 
-    acceptedSockets[acceptedSocketsCount++] = clientSocket;
+    addClient(manager, clientSocket);
 
-    workOnNewThread(clientSocket.acceptedSocketFD, receiveAndPrintIncomingData);
+    workOnNewThread(clientSocket.acceptedSocketFD, manager,
+                    receiveAndPrintIncomingData);
   }
 }
