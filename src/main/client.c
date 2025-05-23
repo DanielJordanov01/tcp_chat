@@ -1,8 +1,8 @@
-#include "../include/client_setup.h"
-#include "../include/config.h"
-#include "../include/macros.h"
-#include "../include/message.h"
-#include "../include/threading.h"
+#include "app/client_setup.h"
+#include "core/config.h"
+#include "core/macros.h"
+#include "io/message.h"
+#include "threading/threading.h"
 
 #include <arpa/inet.h>
 #include <netinet/in.h>

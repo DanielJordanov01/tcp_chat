@@ -1,6 +1,6 @@
-#include "../include/threading.h"
-#include "../include/client_manager.h"
-#include "../include/macros.h"
+#include "threading/threading.h"
+#include "app/client_manager.h"
+#include "core/macros.h"
 
 #include <pthread.h>
 #include <stdlib.h>

@@ -1,4 +1,4 @@
-#include "../include/config.h"
+#include "core/config.h"
 #include "unity/unity.h"
 
 void setUp(void) {}

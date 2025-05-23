@@ -1,6 +1,6 @@
-#include "../include/client_setup.h"
-#include "../include/connection.h"
-#include "../include/macros.h"
+#include "app/client_setup.h"
+#include "core/macros.h"
+#include "net/connection.h"
 
 #include <unistd.h>
 

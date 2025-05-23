@@ -1,8 +1,8 @@
-#include "../include/server_handler.h"
-#include "../include/client_manager.h"
-#include "../include/connection.h"
-#include "../include/message.h"
-#include "../include/threading.h"
+#include "app/server_handler.h"
+#include "app/client_manager.h"
+#include "io/message.h"
+#include "net/connection.h"
+#include "threading/threading.h"
 
 #include <stdbool.h>
 #include <stdio.h>

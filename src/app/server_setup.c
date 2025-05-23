@@ -1,6 +1,6 @@
-#include "../include/server_setup.h"
-#include "../include/connection.h"
-#include "../include/macros.h"
+#include "app/server_setup.h"
+#include "core/macros.h"
+#include "net/connection.h"
 
 int initServer(char *ip, int port) {
   int serverSocketFD = createTCPIpv4Socket();

@@ -1,6 +1,6 @@
-#include "../include/client_manager.h"
-#include "../include/connection.h"
-#include "../include/input.h"
+#include "app/client_manager.h"
+#include "io/input.h"
+#include "net/connection.h"
 
 #include <stdbool.h>
 #include <stdio.h>

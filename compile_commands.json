@@ -1,0 +1,17 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "build/client.o",
+      "src/client.c"
+    ],
+    "directory": "/Users/danielyordanov/Documents/Development/tcpecho",
+    "file": "/Users/danielyordanov/Documents/Development/tcpecho/src/client.c",
+    "output": "/Users/danielyordanov/Documents/Development/tcpecho/build/client.o"
+  }
+]

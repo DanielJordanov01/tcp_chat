@@ -1,9 +1,9 @@
-#include "../include/client_manager.h"
-#include "../include/config.h"
-#include "../include/connection.h"
-#include "../include/macros.h"
-#include "../include/server_handler.h"
-#include "../include/server_setup.h"
+#include "app/client_manager.h"
+#include "app/server_handler.h"
+#include "app/server_setup.h"
+#include "core/config.h"
+#include "core/macros.h"
+#include "net/connection.h"
 
 #include <errno.h>
 #include <netinet/in.h>

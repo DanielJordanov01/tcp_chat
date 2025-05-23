@@ -1,4 +1,4 @@
-#include "../include/config.h"
+#include "core/config.h"
 #include <stdlib.h>
 
 Config parseArgs(int argc, char *argv[]) {

@@ -13,24 +13,6 @@ I've done both poorly.
 - Threaded client that listens and sends messages simultaneously
 - Uses raw sockets and manual memory management
 
-## 📁 Folder Structure
-
-```
-tcp-chat/
-├── include/            # Header files (.h)
-│
-├── src/                # Source files (.c)
-│
-├── build/              # Compiled output (binary + .o files) [auto-created]
-│
-├── docs/               # Documentation on functions [auto-created]
-│
-├── Makefile            # Build script
-├── Doxyfile            # Documentation configuration
-├── .gitignore          # Git ignore rules
-└── README.md           # Project overview
-```
-
 ---
 
 ## ⚙️ Build Instructions

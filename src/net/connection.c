@@ -1,5 +1,5 @@
-#include "../include/connection.h"
-#include "../include/macros.h"
+#include "net/connection.h"
+#include "core/macros.h"
 
 #include <arpa/inet.h>
 #include <stdio.h>
