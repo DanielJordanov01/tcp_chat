@@ -1,0 +1,17 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "build/client.o",
+      "src/client.c"
+    ],
+    "directory": "",
+    "file": "",
+    "output": ""
+  }
+]
